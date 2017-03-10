@@ -1,0 +1,21 @@
+<h1>
+    Reusable UI
+</h1>
+
+<div [formGroup]="form">
+
+    {{form.controls.ddTest.value}}
+
+    <dropdown formControlName="ddTest" [items]="['1', '2', '3']"></dropdown>
+
+    <h3>Custom:</h3>
+
+    {{form.controls.ddTest2.value}}
+
+    <dropdown formControlName="ddTest2" [items]="customItems">
+        <template let-context="context">
+            <div>- {{context.item.text}} -</div>
+        </template>
+    </dropdown>
+
+</div>
