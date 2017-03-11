@@ -50,6 +50,8 @@ export class RuiDropdownService extends SubscriptionHandler{
                 this.openSubject.next(false);
             });
 
+        this.selectSubject.next({value: {}});
+
         this.subs = this.changeSubject
             .distinctUntilChanged((a, b) => a.value === b.value)
             .audit(value => {
