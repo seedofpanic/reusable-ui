@@ -13,7 +13,7 @@ export class RuiInputDirective {
                 private input: ElementRef) {
         this.inputSubscription = Observable.fromEvent(input.nativeElement, 'input')
             .subscribe((event: any) => { // TODO: type?
-                service.watcher.next(event.target.value);
+                service.changeSubject.next(event.target.value);
             });
     }
 

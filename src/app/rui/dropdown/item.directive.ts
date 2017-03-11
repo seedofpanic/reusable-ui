@@ -22,7 +22,7 @@ export class RuiItemDirective {
         private service: RuiDropdownService
     ) {
 
-        this.changeSubscription = this.service.selectChanged
+        this.changeSubscription = this.service.selectSubject
             .distinctUntilChanged()
             .subscribe(selected => {
                 this.context.isSelected = this.ruiItem === selected;
@@ -45,8 +45,8 @@ export class RuiItemDirective {
 
             this.clickSubscription = Observable.fromEvent(view.rootNodes[0].nextSibling, 'click')
                 .subscribe(() => {
-                    this.service.selectChanged.next(this.ruiItem);
-                    this.service.watcher.next(this.ruiItem);
+                    this.service.selectSubject.next(this.ruiItem);
+                    this.service.changeSubject.next(this.ruiItem);
                 });
         }
     }

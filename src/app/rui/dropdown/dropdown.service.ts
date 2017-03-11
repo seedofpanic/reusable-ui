@@ -1,11 +1,11 @@
 import {Injectable, TemplateRef} from '@angular/core';
-import {Observable, Subject, Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 
 @Injectable()
 export class RuiDropdownService {
-    watcher: Subject<any>;
-    selectChanged: Subject<any>;
-    openChanged: Subject<any>;
+    changeSubject: Subject<any>;
+    selectSubject: Subject<any>;
+    openSubject: Subject<any>;
     itemTemplate: TemplateRef<any>;
 
     isOpen: boolean;
@@ -14,24 +14,24 @@ export class RuiDropdownService {
     selectSubscription: Subscription;
 
     constructor() {
-        this.watcher = new Subject();
-        this.selectChanged = new Subject();
-        this.openChanged = new Subject();
+        this.changeSubject = new Subject();
+        this.selectSubject = new Subject();
+        this.openSubject = new Subject();
 
-        this.openSubscription = this.openChanged
+        this.openSubscription = this.openSubject
             .distinctUntilChanged()
             .subscribe(isOpen => {
                 this.isOpen = isOpen;
             });
 
-        this.selectSubscription = this.selectChanged
+        this.selectSubscription = this.selectSubject
             .subscribe(() => {
-                this.openChanged.next(false);
+                this.openSubject.next(false);
             })
     }
 
     toggleOpen() {
-        this.openChanged.next(!this.isOpen);
+        this.openSubject.next(!this.isOpen);
     }
 
     ngOnDestroy() {

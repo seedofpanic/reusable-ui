@@ -16,7 +16,7 @@ export class RuiDropdownDirective {
     changeSubscription: Subscription;
 
     constructor(public service: RuiDropdownService) {
-        this.changeSubscription = service.watcher
+        this.changeSubscription = service.changeSubject
             .distinctUntilChanged()
             .subscribe(value => {
                 this.valueChange.emit(value);
@@ -25,7 +25,7 @@ export class RuiDropdownDirective {
 
     ngOnChanges(changes: OnChanges) {
         if (changes['ruiDropdown']) {
-            this.service.watcher.next(this.value);
+            this.service.changeSubject.next(this.value);
         }
 
         if (changes['itemTemplate']) {

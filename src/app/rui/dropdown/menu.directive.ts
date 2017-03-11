@@ -12,7 +12,7 @@ export class RuiMenuDirective {
     openSubscription: Subscription;
 
     constructor(private service: RuiDropdownService) {
-        this.openSubscription = this.service.openChanged
+        this.openSubscription = this.service.openSubject
             .distinctUntilChanged()
             .subscribe(isOpen => {
                 this.isOpenChange.next(isOpen);
@@ -21,7 +21,7 @@ export class RuiMenuDirective {
 
     ngOnChanges(changes: OnChanges) {
         if (changes['ruiMenu']) {
-            this.service.openChanged.next(this.isOpen);
+            this.service.openSubject.next(this.isOpen);
         }
     }
 
