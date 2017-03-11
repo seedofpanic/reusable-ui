@@ -1,4 +1,4 @@
-<div [(ruiDropdown)]="value" [itemTemplate]="itemTemplate">
+<div [(ruiDropdown)]="value" [itemTemplate]="itemTemplate" (keydown)="test()" (ruiBlur)="blur()" (ruiFocus)="focus()">
     <input ruiInput/>
     <button ruiToggle></button>
     <div class="menu" [(ruiMenu)]="isOpen" [class.open]="isOpen">

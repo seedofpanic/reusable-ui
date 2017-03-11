@@ -1,11 +1,12 @@
 import {Directive, Input, ViewContainerRef, TemplateRef, OnChanges, EmbeddedViewRef} from '@angular/core';
 import {Subscription, Observable} from 'rxjs';
 import {RuiDropdownService} from './dropdown.service';
+import {SubscriptionHandler} from '../tools/subscriptionHandler';
 
 @Directive({
     selector: '[ruiItem]'
 })
-export class RuiItemDirective {
+export class RuiItemDirective extends SubscriptionHandler {
 
     @Input() ruiItem: any;
     context: {
@@ -14,15 +15,15 @@ export class RuiItemDirective {
     };
 
     clickSubscription: Subscription;
-    changeSubscription: Subscription;
 
     constructor(
         private viewContainerRef: ViewContainerRef,
         private templateRef: TemplateRef<any>,
         private service: RuiDropdownService
     ) {
+        super();
 
-        this.changeSubscription = this.service.selectChanged
+        this.subs = this.service.selectSubject
             .distinctUntilChanged()
             .subscribe(selected => {
                 this.context.isSelected = this.ruiItem === selected;
@@ -45,8 +46,7 @@ export class RuiItemDirective {
 
             this.clickSubscription = Observable.fromEvent(view.rootNodes[0].nextSibling, 'click')
                 .subscribe(() => {
-                    this.service.selectChanged.next(this.ruiItem);
-                    this.service.watcher.next(this.ruiItem);
+                    this.service.selectSubject.next({value: this.ruiItem});
                 });
         }
     }
@@ -56,6 +56,6 @@ export class RuiItemDirective {
             this.clickSubscription.unsubscribe();
         }
 
-        this.changeSubscription.unsubscribe();
+        this.freeSubs();
     }
 }
