@@ -10,7 +10,9 @@ import {SubscriptionHandler} from '../tools/subscriptionHandler';
     host: {
         '(focus)': 'onFocus()',
         '(keydown.meta.z)': 'onUndo()',
-        '(keydown.meta.shift.z)': 'onRedo()'
+        '(keydown.meta.shift.z)': 'onRedo()',
+        '(mouseover)': 'this.service.setHover(true)',
+        '(mouseout)': 'this.service.setHover(false)'
     }
 })
 export class RuiDropdownDirective extends SubscriptionHandler {
@@ -37,31 +39,34 @@ export class RuiDropdownDirective extends SubscriptionHandler {
             });
 
         this.subs = service.selectSubject
-            .subscribe(selected => {
-                this.ruiSelect.emit(selected);
-            });
-
-        this.subs = service.blurSubject
-            .subscribe(() => {
-                this.service.openSubject.next(false);
-                this.ruiBlur.emit();
+            .distinctUntilChanged()
+            .subscribe(event => {
+                this.ruiSelect.emit(event.value);
             });
 
         this.subs = service.selectSubject
-            .subscribe(() => {
-                this.service.setFocus(false);
+            .subscribe((event) => {
+                if (event.force) {
+                    return;
+                }
+
+                this.service.setFocus(true);
             });
 
         this.subs = service.focusSubject
-            .distinctUntilChanged((a, b) => a && (a != b))
             .subscribe((focus) => {
-                this.ruiFocus.emit();
+                if (focus) {
+                    this.ruiFocus.emit();
+                } else {
+                    this.service.openSubject.next(false);
+                    this.ruiBlur.emit();
+                }
             });
     }
 
     ngOnChanges(changes: OnChanges) {
         if (changes['value']) {
-            this.service.changeSubject.next({force: true, value: this.value});
+            this.service.selectSubject.next({force: true, value: this.value});
         }
 
         if (changes['itemTemplate']) {

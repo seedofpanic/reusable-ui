@@ -3,19 +3,25 @@ import {Subject, Observable} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 import {StateHistory, IState} from '../tools/stateHistory';
 
+interface DropdownEvent<T> {
+    silent?: boolean;
+    force?: boolean;
+    value: T;
+}
+
 @Injectable()
 export class RuiDropdownService extends SubscriptionHandler{
-    changeSubject = new Subject<{silent?: boolean, force?: boolean, value: string}>();
-    selectSubject: Subject<any> = new Subject();
-    openSubject: Subject<any> = new Subject();
-    focusSubject: Subject<any> = new Subject();
-    blurSubject: Subject<any> = new Subject();
+    changeSubject = new Subject<DropdownEvent<string>>();
+    selectSubject = new Subject<DropdownEvent<any>>();
+    openSubject = new Subject<any>();
+    focusSubject = new Subject<any>();
 
     root: ElementRef;
     itemTemplate: TemplateRef<any>;
 
     isOpen: boolean;
     isFocused: boolean;
+    isHovered: boolean;
 
     history: StateHistory;
 
@@ -31,7 +37,16 @@ export class RuiDropdownService extends SubscriptionHandler{
             });
 
         this.subs = this.selectSubject
-            .subscribe(() => {
+            .distinctUntilChanged((a, b) => a.value === b.value)
+            .pairwise()
+            .subscribe((event) => {
+                if (!event[1].force) {
+                    this.history.do('select', event);
+                }
+
+                event[1].value = event[1].value.toString();
+                event[1].silent = true;
+                this.changeSubject.next(event[1]);
                 this.openSubject.next(false);
             });
 
@@ -45,12 +60,12 @@ export class RuiDropdownService extends SubscriptionHandler{
                 }
             })
             .pairwise()
-            .subscribe(value => {
-                if (value[1].silent) {
+            .subscribe(event => {
+                if (event[1].silent) {
                     return;
                 }
 
-                this.history.do('change', {o: value[0], n: value[1]});
+                this.history.do('change', event);
             });
     }
 
@@ -63,17 +78,11 @@ export class RuiDropdownService extends SubscriptionHandler{
     }
 
     setFocus(focus: boolean) {
-        if (this.isFocused === focus) {
-            return;
-        }
+        this.focusSubject.next(focus);
+    }
 
-        this.isFocused = focus;
-
-        if (focus) {
-            this.focusSubject.next();
-        } else {
-            this.blurSubject.next();
-        }
+    setHover(hover: boolean) {
+        this.isHovered = hover;
     }
 
     undo() {
@@ -84,7 +93,10 @@ export class RuiDropdownService extends SubscriptionHandler{
 
         switch (state.name) {
             case 'change':
-                this.changeSubject.next({silent: true, value: state.data.o.value});
+                this.changeSubject.next({silent: true, value: state.data[0].value});
+                break;
+            case 'select':
+                this.changeSubject.next({silent: true, value: state.data[0].value});
                 break;
         }
     }
@@ -97,7 +109,10 @@ export class RuiDropdownService extends SubscriptionHandler{
 
         switch (state.name) {
             case 'change':
-                this.changeSubject.next({silent: true, value: state.data.n.value});
+                this.changeSubject.next({silent: true, value: state.data[1].value});
+                break;
+            case 'select':
+                this.changeSubject.next({silent: true, value: state.data[1].value});
                 break;
         }
     }

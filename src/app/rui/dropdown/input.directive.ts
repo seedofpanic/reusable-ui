@@ -20,7 +20,7 @@ export class RuiInputDirective extends SubscriptionHandler {
 
         this.subs = this.service.changeSubject
             .distinctUntilChanged()
-            .subscribe((value) => {
+            .subscribe(value => {
                 this.renderer.setElementProperty(this.element.nativeElement, 'value', value.value);
             });
 
@@ -30,13 +30,15 @@ export class RuiInputDirective extends SubscriptionHandler {
             });
 
         this.subs = this.service.focusSubject
-            .subscribe(() => {
-                this.renderer.invokeElementMethod(this.element.nativeElement, 'focus');
+            .subscribe(event => {
+                if (event) {
+                    this.renderer.invokeElementMethod(this.element.nativeElement, 'focus');
+                }
             });
 
         this.subs = Observable.fromEvent(this.element.nativeElement, 'blur')
             .subscribe((event: FocusEvent) => {
-                if (!event.relatedTarget || !elementHasParent(new ElementRef(event.relatedTarget), this.service.root)) {
+                if (!this.service.isHovered) {
                     this.service.setFocus(false);
                 }
             });
