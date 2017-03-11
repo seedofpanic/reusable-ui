@@ -5,7 +5,11 @@ import {SubscriptionHandler} from '../tools/subscriptionHandler';
 import {elementHasParent} from '../tools/domHelpers';
 
 @Directive({
-    selector: '[ruiInput]'
+    selector: '[ruiInput]',
+    host: {
+        '(keydown.meta.z)': 'preventDefault($event)',
+        '(keydown.meta.shift.z)': 'preventDefault($event)'
+    }
 })
 export class RuiInputDirective extends SubscriptionHandler {
 
@@ -14,15 +18,15 @@ export class RuiInputDirective extends SubscriptionHandler {
                 private renderer: Renderer) {
         super();
 
-        this.subs = this.service.setSubject
+        this.subs = this.service.changeSubject
             .distinctUntilChanged()
             .subscribe((value) => {
-                this.renderer.setElementProperty(this.element.nativeElement, 'value', value);
+                this.renderer.setElementProperty(this.element.nativeElement, 'value', value.value);
             });
 
         this.subs = Observable.fromEvent(element.nativeElement, 'input')
             .subscribe((event: any) => { // TODO: type?
-                service.changeSubject.next(event.target.value);
+                service.changeSubject.next({value: event.target.value});
             });
 
         this.subs = this.service.focusSubject
@@ -45,5 +49,9 @@ export class RuiInputDirective extends SubscriptionHandler {
 
     ngOnDestroy() {
         this.freeSubs();
+    }
+
+    preventDefault(e: KeyboardEvent) {
+        e.preventDefault();
     }
 }

@@ -8,7 +8,9 @@ import {SubscriptionHandler} from '../tools/subscriptionHandler';
     selector: '[ruiDropdown]',
     providers: [RuiDropdownService],
     host: {
-        '(focus)': 'onFocus()'
+        '(focus)': 'onFocus()',
+        '(keydown.meta.z)': 'onUndo()',
+        '(keydown.meta.shift.z)': 'onRedo()'
     }
 })
 export class RuiDropdownDirective extends SubscriptionHandler {
@@ -28,10 +30,10 @@ export class RuiDropdownDirective extends SubscriptionHandler {
         this.service.root = this.element;
 
         this.subs = service.changeSubject
-            .distinctUntilChanged()
+            .distinctUntilChanged((a, b) => a.value === b.value)
             .subscribe(value => {
-                this.ruiChange.emit(value);
-                this.valueChange.emit(value);
+                this.ruiChange.emit(value.value);
+                this.valueChange.emit(value.value);
             });
 
         this.subs = service.selectSubject
@@ -40,8 +42,8 @@ export class RuiDropdownDirective extends SubscriptionHandler {
             });
 
         this.subs = service.blurSubject
-            .distinctUntilChanged((a, b) => a && (a != b))
             .subscribe(() => {
+                this.service.openSubject.next(false);
                 this.ruiBlur.emit();
             });
 
@@ -59,12 +61,20 @@ export class RuiDropdownDirective extends SubscriptionHandler {
 
     ngOnChanges(changes: OnChanges) {
         if (changes['value']) {
-            this.service.setSubject.next(this.value);
+            this.service.changeSubject.next({force: true, value: this.value});
         }
 
         if (changes['itemTemplate']) {
             this.service.itemTemplate = this.itemTemplate;
         }
+    }
+
+    onUndo() {
+        this.service.undo();
+    }
+
+    onRedo() {
+        this.service.redo();
     }
 
     ngOnDestroy() {

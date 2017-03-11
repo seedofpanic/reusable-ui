@@ -47,7 +47,7 @@ export class RuiItemDirective extends SubscriptionHandler {
             this.clickSubscription = Observable.fromEvent(view.rootNodes[0].nextSibling, 'click')
                 .subscribe(() => {
                     this.service.selectSubject.next(this.ruiItem);
-                    this.service.setSubject.next(this.ruiItem);
+                    this.service.changeSubject.next(this.ruiItem);
                 });
         }
     }
