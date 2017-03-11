@@ -17,22 +17,44 @@ export class DropdownComponent implements ControlValueAccessor {
 
     @Input() items: any[];
 
+    private _value: string;
+
     @Input() set value(newValue: string) {
-        if (this.valueChange) {
+        if (this.valueChange && newValue !== this._value) {
             this.valueChange(newValue);
         }
+
+        this._value = newValue;
     }
+
+    get value() {
+        return this._value;
+    }
+
     valueChange: Function;
     valueTouched: Function;
 
     @ContentChild(TemplateRef) itemTemplate: any;
 
+    test() {
+    }
+
+    blur() {
+        console.log('blur');
+    }
+
+    focus() {
+        console.log('focus');
+    }
+
     writeValue(obj: any): void {
-        this.value = obj;
+        if (obj !== this._value) {
+            this.value = obj;
+        }
     }
 
     registerOnChange(fn: Function): void {
-        this.valueChange = fn
+        this.valueChange = fn;
     }
 
     registerOnTouched(fn: Function): void {

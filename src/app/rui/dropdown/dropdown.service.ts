@@ -1,33 +1,35 @@
-import {Injectable, TemplateRef} from '@angular/core';
+import {Injectable, TemplateRef, ElementRef} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
+import {SubscriptionHandler} from '../tools/subscriptionHandler';
 
 @Injectable()
-export class RuiDropdownService {
-    changeSubject: Subject<any>;
-    selectSubject: Subject<any>;
-    openSubject: Subject<any>;
+export class RuiDropdownService extends SubscriptionHandler{
+    setSubject: Subject<any> = new Subject();
+    changeSubject: Subject<any> = new Subject();
+    selectSubject: Subject<any> = new Subject();
+    openSubject: Subject<any> = new Subject();
+    focusSubject: Subject<any> = new Subject();
+    blurSubject: Subject<any> = new Subject();
+
+    root: ElementRef;
     itemTemplate: TemplateRef<any>;
 
     isOpen: boolean;
-
-    openSubscription: Subscription;
-    selectSubscription: Subscription;
+    isFocused: boolean;
 
     constructor() {
-        this.changeSubject = new Subject();
-        this.selectSubject = new Subject();
-        this.openSubject = new Subject();
+        super();
 
-        this.openSubscription = this.openSubject
+        this.subs = this.openSubject
             .distinctUntilChanged()
             .subscribe(isOpen => {
                 this.isOpen = isOpen;
             });
 
-        this.selectSubscription = this.selectSubject
+        this.subs = this.selectSubject
             .subscribe(() => {
                 this.openSubject.next(false);
-            })
+            });
     }
 
     toggleOpen() {
@@ -35,7 +37,20 @@ export class RuiDropdownService {
     }
 
     ngOnDestroy() {
-        this.openSubscription.unsubscribe();
-        this.selectSubscription.unsubscribe();
+        this.freeSubs();
+    }
+
+    setFocus(focus: boolean) {
+        if (this.isFocused === focus) {
+            return;
+        }
+
+        this.isFocused = focus;
+
+        if (focus) {
+            this.focusSubject.next();
+        } else {
+            this.blurSubject.next();
+        }
     }
 }
