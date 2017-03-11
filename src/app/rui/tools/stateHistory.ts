@@ -39,11 +39,7 @@ export class StateHistory {
         return;
     }
 
-    clear(name?: string) {
-        if (name) {
-            this.history.splice(this.history.findIndex(state => state.name === name))
-        } else {
-            this.history.length = 0;
-        }
+    clear() {
+        this.history.length = 0;
     }
 }
