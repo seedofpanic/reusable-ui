@@ -1,5 +1,5 @@
 import {Injectable, TemplateRef, ElementRef} from '@angular/core';
-import {Subject, Subscription} from 'rxjs';
+import {Subject} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 
 @Injectable()

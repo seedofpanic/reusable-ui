@@ -10,8 +10,7 @@ import {elementHasParent} from '../tools/domHelpers';
 export class RuiToggleDirective extends SubscriptionHandler {
 
     constructor(private service: RuiDropdownService,
-                private element: ElementRef,
-                private renderer: Renderer) {
+                private element: ElementRef) {
         super();
 
         this.subs = Observable.fromEvent(element.nativeElement, 'click')

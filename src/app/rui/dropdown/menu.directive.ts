@@ -21,7 +21,7 @@ export class RuiMenuDirective extends SubscriptionHandler {
 
     ngOnChanges(changes: OnChanges) {
         if (changes['isOpen']) {
-            // this.service.openSubject.next(this.isOpen);
+            this.service.openSubject.next(this.isOpen);
         }
     }
 

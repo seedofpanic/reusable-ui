@@ -1,8 +1,7 @@
 import {
-    Directive, Input, OnChanges, EventEmitter, Output, TemplateRef, Renderer, ElementRef
+    Directive, Input, OnChanges, EventEmitter, Output, TemplateRef, ElementRef
 } from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
-import {Subscription} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 
 @Directive({
@@ -17,18 +16,13 @@ export class RuiDropdownDirective extends SubscriptionHandler {
     @Input('ruiDropdown') value;
     @Output('ruiDropdownChange') valueChange = new EventEmitter<string>();
 
-    @Output() ruiInput = new EventEmitter();
     @Output() ruiChange = new EventEmitter();
     @Output() ruiSelect = new EventEmitter();
     @Output() ruiFocus = new EventEmitter();
     @Output() ruiBlur = new EventEmitter();
-    @Output() ruiKeydown = new EventEmitter();
-    @Output() ruiKeyup = new EventEmitter();
-    @Output() ruiKeypress = new EventEmitter();
 
     constructor(public service: RuiDropdownService,
-                private element: ElementRef,
-                private renderer: Renderer) {
+                private element: ElementRef) {
         super();
 
         this.service.root = this.element;
@@ -36,7 +30,13 @@ export class RuiDropdownDirective extends SubscriptionHandler {
         this.subs = service.changeSubject
             .distinctUntilChanged()
             .subscribe(value => {
+                this.ruiChange.emit(value);
                 this.valueChange.emit(value);
+            });
+
+        this.subs = service.selectSubject
+            .subscribe(selected => {
+                this.ruiSelect.emit(selected);
             });
 
         this.subs = service.blurSubject
