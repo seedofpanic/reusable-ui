@@ -2,6 +2,8 @@
 
 import {TestBed, async} from '@angular/core/testing';
 import {AppComponent} from './app.component';
+import {DropdownModule} from './demo-ui/dropdown/dropdown.module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 describe('AppComponent', () => {
     beforeEach(() => {
@@ -9,6 +11,11 @@ describe('AppComponent', () => {
             declarations: [
                 AppComponent
             ],
+            imports: [
+              FormsModule,
+              ReactiveFormsModule,
+              DropdownModule
+            ]
         });
         TestBed.compileComponents();
     });
@@ -17,18 +24,5 @@ describe('AppComponent', () => {
         let fixture = TestBed.createComponent(AppComponent);
         let app = fixture.debugElement.componentInstance;
         expect(app).toBeTruthy();
-    }));
-
-    it(`should have as title 'app works!'`, async(() => {
-        let fixture = TestBed.createComponent(AppComponent);
-        let app = fixture.debugElement.componentInstance;
-        expect(app.title).toEqual('app works!');
-    }));
-
-    it('should render title in a h1 tag', async(() => {
-        let fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        let compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('h1').textContent).toContain('app works!');
     }));
 });
