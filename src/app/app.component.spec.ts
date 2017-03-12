@@ -2,20 +2,14 @@
 
 import {TestBed, async} from '@angular/core/testing';
 import {AppComponent} from './app.component';
+import {AppModule} from './app.module';
 import {DropdownModule} from './demo-ui/dropdown/dropdown.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 describe('AppComponent', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                AppComponent
-            ],
-            imports: [
-              FormsModule,
-              ReactiveFormsModule,
-              DropdownModule
-            ]
+          imports: [AppModule]
         });
         TestBed.compileComponents();
     });
