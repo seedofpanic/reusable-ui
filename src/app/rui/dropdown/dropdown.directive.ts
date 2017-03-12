@@ -1,5 +1,8 @@
+// TODO: Decide on this tslint rules
+/* tslint:disable:use-host-property-decorator no-output-rename no-input-rename*/
+
 import {
-    Directive, Input, OnChanges, EventEmitter, Output, TemplateRef, ElementRef
+    Directive, Input, OnChanges, SimpleChanges, EventEmitter, Output, TemplateRef, ElementRef, OnDestroy
 } from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
@@ -15,7 +18,7 @@ import {SubscriptionHandler} from '../tools/subscriptionHandler';
         '(mouseout)': 'this.service.setHover(false)'
     }
 })
-export class RuiDropdownDirective extends SubscriptionHandler {
+export class RuiDropdownDirective extends SubscriptionHandler implements OnChanges, OnDestroy {
     @Input() itemTemplate: TemplateRef<any>;
     @Input('ruiDropdown') value;
     @Output('ruiDropdownChange') valueChange = new EventEmitter<string>();
@@ -64,7 +67,7 @@ export class RuiDropdownDirective extends SubscriptionHandler {
             });
     }
 
-    ngOnChanges(changes: OnChanges) {
+    ngOnChanges(changes: SimpleChanges) {
         if (changes['value']) {
             this.service.selectSubject.next({force: true, value: this.value});
         }

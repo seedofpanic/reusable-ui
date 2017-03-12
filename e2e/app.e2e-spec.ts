@@ -7,8 +7,8 @@ describe('reusable-ui App', function() {
     page = new ReusableUiPage();
   });
 
-  it('should display message saying app works', () => {
+  it('should display message saying Reusable UI', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
+    expect(page.getParagraphText()).toEqual('Reusable UI');
   });
 });

@@ -1,4 +1,4 @@
-import {Injectable, TemplateRef, ElementRef} from '@angular/core';
+import {Injectable, TemplateRef, ElementRef, OnDestroy} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 import {StateHistory, IState} from '../tools/stateHistory';
@@ -10,7 +10,7 @@ interface DropdownEvent<T> {
 }
 
 @Injectable()
-export class RuiDropdownService extends SubscriptionHandler{
+export class RuiDropdownService extends SubscriptionHandler implements OnDestroy {
     changeSubject = new Subject<DropdownEvent<string>>();
     selectSubject = new Subject<DropdownEvent<any>>();
     openSubject = new Subject<any>();
