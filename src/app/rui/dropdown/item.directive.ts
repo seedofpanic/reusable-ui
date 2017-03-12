@@ -1,4 +1,13 @@
-import {Directive, Input, ViewContainerRef, TemplateRef, OnChanges, EmbeddedViewRef} from '@angular/core';
+import {
+  Directive,
+  Input,
+  ViewContainerRef,
+  TemplateRef,
+  OnChanges,
+  SimpleChanges,
+  EmbeddedViewRef,
+  OnDestroy
+} from '@angular/core';
 import {Subscription, Observable} from 'rxjs';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
@@ -6,7 +15,7 @@ import {SubscriptionHandler} from '../tools/subscriptionHandler';
 @Directive({
     selector: '[ruiItem]'
 })
-export class RuiItemDirective extends SubscriptionHandler {
+export class RuiItemDirective extends SubscriptionHandler implements OnDestroy, OnChanges {
 
     @Input() ruiItem: any;
     context: {
@@ -30,7 +39,7 @@ export class RuiItemDirective extends SubscriptionHandler {
             });
     }
 
-    ngOnChanges(changes: OnChanges) {
+    ngOnChanges(changes: SimpleChanges) {
         if (changes['ruiItem']) {
             this.context = {
                 item: this.ruiItem,

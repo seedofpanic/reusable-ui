@@ -1,4 +1,7 @@
-import {Directive, ElementRef, Renderer} from '@angular/core';
+// TODO: Decide on this tslint rule
+/* tslint:disable:use-host-property-decorator */
+
+import {Directive, ElementRef, Renderer, OnDestroy} from '@angular/core';
 import {Observable} from 'rxjs';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
@@ -11,7 +14,7 @@ import {elementHasParent} from '../tools/domHelpers';
         '(keydown.meta.shift.z)': 'preventDefault($event)'
     }
 })
-export class RuiInputDirective extends SubscriptionHandler {
+export class RuiInputDirective extends SubscriptionHandler implements OnDestroy {
 
     constructor(private service: RuiDropdownService,
                 private element: ElementRef,

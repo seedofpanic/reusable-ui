@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Renderer} from '@angular/core';
+import {Directive, ElementRef, Renderer, OnDestroy} from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {Observable} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
@@ -7,7 +7,7 @@ import {elementHasParent} from '../tools/domHelpers';
 @Directive({
     selector: '[ruiToggle]'
 })
-export class RuiToggleDirective extends SubscriptionHandler {
+export class RuiToggleDirective extends SubscriptionHandler implements OnDestroy {
 
     constructor(private service: RuiDropdownService,
                 private element: ElementRef) {

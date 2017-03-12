@@ -2,6 +2,7 @@ import {Component, forwardRef, Input, TemplateRef, ContentChild} from '@angular/
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
+    // tslint:disable-next-line
     selector: 'dropdown',
     templateUrl: './dropdown.html',
     styleUrls: ['./dropdown.css'],
