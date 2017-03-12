@@ -46,18 +46,18 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
 
                 this.openSubject.next(false);
 
-                if (!event[1].value || event[0].value === event[1].value) {
+                if (event[0].value === event[1].value) {
                     return;
                 }
 
                 this.changeSubject.next({
-                    value: event[1].value.toString(),
+                    value: event[1].value ? event[1].value.toString() : '',
                     silent: true,
                     force: event[1].force
                 });
             });
 
-        this.selectSubject.next({});
+        this.selectSubject.next({force: true});
 
         // TODO: refactor
         this.subs = this.changeSubject
@@ -118,7 +118,7 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
                 this.changeSubject.next({silent: true, value: state.data[0].value});
                 break;
             case 'select':
-                this.changeSubject.next({silent: true, value: state.data[0].value});
+                this.selectSubject.next({force: true, value: state.data[0].value});
                 break;
         }
     }
@@ -134,7 +134,7 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
                 this.changeSubject.next({silent: true, value: state.data[1].value});
                 break;
             case 'select':
-                this.changeSubject.next({silent: true, value: state.data[1].value});
+                this.selectSubject.next({force: true, value: state.data[1].value});
                 break;
         }
     }
