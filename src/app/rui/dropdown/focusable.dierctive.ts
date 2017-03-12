@@ -35,8 +35,4 @@ export class RuiFocusableDirective extends SubscriptionHandler implements OnDest
     ngOnDestroy() {
         this.freeSubs();
     }
-
-    preventDefault(e: KeyboardEvent) {
-        e.preventDefault();
-    }
 }
