@@ -54,6 +54,7 @@ export class RuiDropdownDirective extends SubscriptionHandler {
             });
 
         this.subs = service.focusSubject
+            .distinctUntilChanged()
             .subscribe((focus) => {
                 if (focus) {
                     this.ruiFocus.emit();

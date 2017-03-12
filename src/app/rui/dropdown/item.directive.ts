@@ -1,4 +1,4 @@
-import {Directive, Input, ViewContainerRef, TemplateRef, OnChanges, EmbeddedViewRef} from '@angular/core';
+import {Directive, Input, ViewContainerRef, TemplateRef, OnChanges} from '@angular/core';
 import {Subscription, Observable} from 'rxjs';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
@@ -26,8 +26,8 @@ export class RuiItemDirective extends SubscriptionHandler {
         this.subs = this.service.selectSubject
             .distinctUntilChanged()
             .subscribe(selected => {
-                this.context.isSelected = this.ruiItem === selected;
-            })
+                this.context.isSelected = this.ruiItem === selected.value;
+            });
     }
 
     ngOnChanges(changes: OnChanges) {
@@ -37,7 +37,7 @@ export class RuiItemDirective extends SubscriptionHandler {
                 isSelected: false
             };
 
-            const view: EmbeddedViewRef<any> = this.viewContainerRef
+            const view = this.viewContainerRef
                 .createEmbeddedView(this.service.itemTemplate || this.templateRef, {context: this.context});
 
             if (this.clickSubscription) {

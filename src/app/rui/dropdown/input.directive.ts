@@ -30,6 +30,7 @@ export class RuiInputDirective extends SubscriptionHandler {
             });
 
         this.subs = this.service.focusSubject
+            .distinctUntilChanged()
             .subscribe(event => {
                 if (event) {
                     this.renderer.invokeElementMethod(this.element.nativeElement, 'focus');
@@ -38,7 +39,10 @@ export class RuiInputDirective extends SubscriptionHandler {
 
         this.subs = Observable.fromEvent(this.element.nativeElement, 'blur')
             .subscribe((event: FocusEvent) => {
-                if (!this.service.isHovered) {
+                if (
+                    !(event.relatedTarget && elementHasParent(new ElementRef(event.relatedTarget), this.service.root))
+                    && !this.service.isHovered
+                ) {
                     this.service.setFocus(false);
                 }
             });

@@ -1,4 +1,4 @@
-import {Directive, ElementRef, Renderer} from '@angular/core';
+import {Directive, ElementRef} from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {Observable} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
@@ -20,7 +20,10 @@ export class RuiToggleDirective extends SubscriptionHandler {
 
         this.subs = Observable.fromEvent(this.element.nativeElement, 'blur')
             .subscribe((event: FocusEvent) => {
-                if (!event.relatedTarget || !elementHasParent(new ElementRef(event.relatedTarget), this.service.root)) {
+                if (
+                    !(event.relatedTarget && elementHasParent(new ElementRef(event.relatedTarget), this.service.root))
+                    && !this.service.isHovered
+                ) {
                     this.service.setFocus(false);
                 }
             });
