@@ -27,7 +27,7 @@ export class RuiItemDirective extends SubscriptionHandler {
             .distinctUntilChanged()
             .subscribe(selected => {
                 this.context.isSelected = this.ruiItem === selected;
-            })
+            });
     }
 
     ngOnChanges(changes: OnChanges) {

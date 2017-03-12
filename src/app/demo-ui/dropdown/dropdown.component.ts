@@ -18,6 +18,7 @@ export class DropdownComponent implements ControlValueAccessor {
     @Input() items: any[];
 
     private _value: string;
+    public isOpen: boolean;
 
     @Input() set value(newValue: string) {
         if (this.valueChange && newValue !== this._value) {
