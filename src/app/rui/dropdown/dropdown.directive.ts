@@ -1,26 +1,18 @@
 import {
-    Directive, Input, OnChanges, EventEmitter, Output, TemplateRef, ElementRef
+    Directive, Input, OnChanges, SimpleChanges, EventEmitter, Output, TemplateRef, ElementRef, OnDestroy, HostListener
 } from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
-import {RuiFocusableDirective} from './focusable.dierctive';
 
 @Directive({
     selector: '[ruiDropdown]',
-    providers: [RuiDropdownService],
-    host: {
-        '(focus)': 'onFocus()',
-        '(keydown.meta.z)': 'onUndo()',
-        '(keydown.meta.shift.z)': 'onRedo()',
-        '(mouseover)': 'this.service.setHover(true)',
-        '(mouseout)': 'this.service.setHover(false)'
-    }
+    providers: [RuiDropdownService]
 })
-export class RuiDropdownDirective extends SubscriptionHandler {
+export class RuiDropdownDirective extends SubscriptionHandler implements OnChanges, OnDestroy {
     @Input() itemTemplate: TemplateRef<any>;
-    @Input('ruiDropdown') value;
+    @Input('ruiDropdown') value: string;
     @Output('ruiDropdownChange') valueChange = new EventEmitter<string>();
-    @Input('ruiSelected') selected;
+    @Input('ruiSelected') selected: any;
     @Output('ruiSelected') selectedChange = new EventEmitter<any>();
 
     @Output() ruiChange = new EventEmitter();
@@ -75,7 +67,7 @@ export class RuiDropdownDirective extends SubscriptionHandler {
             });
     }
 
-    ngOnChanges(changes: OnChanges) {
+    ngOnChanges(changes: SimpleChanges) {
         if (changes['value']) {
             if (this.skipValueChange) {
                 this.skipValueChange = false;
@@ -99,10 +91,22 @@ export class RuiDropdownDirective extends SubscriptionHandler {
         }
     }
 
+    @HostListener('mouseover')
+    onMouseover() {
+        this.service.setHover(true);
+    }
+
+    @HostListener('mouseout')
+    onMouseout() {
+        this.service.setHover(false);
+    }
+
+    @HostListener('keydown.meta.z')
     onUndo() {
         this.service.undo();
     }
 
+    @HostListener('keydown.meta.shift.z')
     onRedo() {
         this.service.redo();
     }

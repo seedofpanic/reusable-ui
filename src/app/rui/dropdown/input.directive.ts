@@ -1,17 +1,16 @@
-import {Directive, ElementRef, Renderer} from '@angular/core';
+// TODO: Decide on this tslint rule
+/* tslint:disable:use-host-property-decorator */
+
+import {Directive, ElementRef, Renderer, OnDestroy, HostListener} from '@angular/core';
 import {Observable} from 'rxjs';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 import {elementHasParent} from '../tools/domHelpers';
 
 @Directive({
-    selector: '[ruiInput]',
-    host: {
-        '(keydown.meta.z)': 'preventDefault($event)',
-        '(keydown.meta.shift.z)': 'preventDefault($event)'
-    }
+    selector: '[ruiInput]'
 })
-export class RuiInputDirective extends SubscriptionHandler {
+export class RuiInputDirective extends SubscriptionHandler implements OnDestroy {
 
     constructor(private service: RuiDropdownService,
                 private element: ElementRef,
@@ -34,6 +33,8 @@ export class RuiInputDirective extends SubscriptionHandler {
         this.freeSubs();
     }
 
+    @HostListener('keydown.meta.z', ['$event'])
+    @HostListener('keydown.meta.shift.z', ['$event'])
     preventDefault(e: KeyboardEvent) {
         e.preventDefault();
     }

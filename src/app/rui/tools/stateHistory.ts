@@ -8,7 +8,7 @@ export class StateHistory {
     private history: IState[] = [];
     private pointer: number;
 
-    constructor(private capacity: number = 50) {}
+    constructor(private capacity = 50) {}
 
     do(name: string, data?: any) {
         if (this.pointer !== this.history.length - 1) {

@@ -1,17 +1,12 @@
-import {Directive, ElementRef, Renderer} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Directive, ElementRef, HostListener, OnDestroy} from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 import {elementHasParent} from '../tools/domHelpers';
 
 @Directive({
-    selector: '[ruiFocusable]',
-    host: {
-        '(blur)': 'onBlur($event)',
-        '(focus)': 'onFocus()'
-    }
+    selector: '[ruiFocusable]'
 })
-export class RuiFocusableDirective extends SubscriptionHandler {
+export class RuiFocusableDirective extends SubscriptionHandler implements OnDestroy {
 
     constructor(private service: RuiDropdownService,
                 private element: ElementRef) {
@@ -21,6 +16,7 @@ export class RuiFocusableDirective extends SubscriptionHandler {
         }
     }
 
+    @HostListener('blur', ['$event'])
     onBlur(event: FocusEvent) {
         if (
             !(event.relatedTarget && elementHasParent(new ElementRef(event.relatedTarget), this.service.root))
@@ -30,6 +26,7 @@ export class RuiFocusableDirective extends SubscriptionHandler {
         }
     }
 
+    @HostListener('focus')
     onFocus() {
         this.service.lastFocusedRef = this.element;
         this.service.setFocus(true);

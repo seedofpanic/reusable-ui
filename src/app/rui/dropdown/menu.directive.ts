@@ -1,11 +1,14 @@
-import {Directive, Input, Output, EventEmitter, OnChanges} from '@angular/core';
+// TODO: Decide on this tslint rules
+/* tslint:disable:no-output-rename no-input-rename*/
+
+import {Directive, Input, Output, EventEmitter, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 
 @Directive({
     selector: '[ruiMenu]'
 })
-export class RuiMenuDirective extends SubscriptionHandler {
+export class RuiMenuDirective extends SubscriptionHandler implements OnDestroy, OnChanges {
     @Input('ruiMenu') isOpen;
     @Output('ruiMenuChange') isOpenChange = new EventEmitter();
 
@@ -18,7 +21,7 @@ export class RuiMenuDirective extends SubscriptionHandler {
             });
     }
 
-    ngOnChanges(changes: OnChanges) {
+    ngOnChanges(changes: SimpleChanges) {
         if (changes['isOpen']) {
             this.service.openSubject.next(this.isOpen);
         }

@@ -2,6 +2,7 @@ import {Component, forwardRef, Input, TemplateRef, ContentChild, Output, EventEm
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
+    // tslint:disable-next-line
     selector: 'dropdown',
     templateUrl: './dropdown.html',
     styleUrls: ['./dropdown.css'],
@@ -20,6 +21,7 @@ export class DropdownComponent implements ControlValueAccessor {
     @Output() selectedChange = new EventEmitter<any>();
 
     private _value: string;
+    public isOpen: boolean;
 
     @Input() set value(newValue: string) {
         if (this.valueChange && newValue !== this._value) {
