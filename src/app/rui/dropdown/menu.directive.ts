@@ -13,7 +13,6 @@ export class RuiMenuDirective extends SubscriptionHandler {
         super();
 
         this.subs = this.service.openSubject
-            .distinctUntilChanged()
             .subscribe(isOpen => {
                 this.isOpenChange.next(isOpen);
             });

@@ -20,36 +20,13 @@ export class RuiInputDirective extends SubscriptionHandler {
 
         this.subs = this.service.changeSubject
             .distinctUntilChanged()
-            .subscribe(value => {
-                this.renderer.setElementProperty(this.element.nativeElement, 'value', value.value);
+            .subscribe(event => {
+                this.renderer.setElementProperty(this.element.nativeElement, 'value', event.value);
             });
 
         this.subs = Observable.fromEvent(element.nativeElement, 'input')
             .subscribe((event: any) => { // TODO: type?
                 service.changeSubject.next({value: event.target.value});
-            });
-
-        this.subs = this.service.focusSubject
-            .distinctUntilChanged()
-            .subscribe(event => {
-                if (event) {
-                    this.renderer.invokeElementMethod(this.element.nativeElement, 'focus');
-                }
-            });
-
-        this.subs = Observable.fromEvent(this.element.nativeElement, 'blur')
-            .subscribe((event: FocusEvent) => {
-                if (
-                    !(event.relatedTarget && elementHasParent(new ElementRef(event.relatedTarget), this.service.root))
-                    && !this.service.isHovered
-                ) {
-                    this.service.setFocus(false);
-                }
-            });
-
-        this.subs = Observable.fromEvent(this.element.nativeElement, 'focus')
-            .subscribe((event: FocusEvent) => {
-                this.service.setFocus(true);
             });
     }
 

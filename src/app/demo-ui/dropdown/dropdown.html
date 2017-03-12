@@ -1,10 +1,15 @@
-<div [(ruiDropdown)]="value" [itemTemplate]="itemTemplate" (keydown)="test()" (ruiBlur)="blur()" (ruiFocus)="focus()">
-    <input ruiInput/>
+<div [(ruiDropdown)]="value"
+     [ruiSelected]="selected"
+     (ruiSelected)="selectedChange.emit(event)"
+     [itemTemplate]="itemTemplate"
+     (ruiBlur)="blur()"
+     (ruiFocus)="focus()">
+    <input ruiInput ruiFocusable/>
     <button ruiToggle></button>
     <div class="menu" [(ruiMenu)]="isOpen" [class.open]="isOpen">
         <template ngFor let-item [ngForOf]="items">
            <template [ruiItem]="item" let-context="context">
-               <div [class.selected]="context.isSelected" ruiToggle>{{context.item.toString()}}</div>
+               <div [class.selected]="context.isSelected" ruiToggle>{{context.item ? context.item.toString() : ''}}</div>
            </template>
         </template>
     </div>

@@ -12,7 +12,7 @@
 
     {{form.controls.ddTest2.value}}
 
-    <dropdown formControlName="ddTest2" [items]="customItems">
+    <dropdown formControlName="ddTest2" [items]="customItems" [selected]="customItems[2]">
         <template let-context="context">
             <div>- {{context.item.text}} -</div>
         </template>

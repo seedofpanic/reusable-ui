@@ -17,21 +17,6 @@ export class RuiToggleDirective extends SubscriptionHandler {
             .subscribe(() => {
                 this.service.toggleOpen();
             });
-
-        this.subs = Observable.fromEvent(this.element.nativeElement, 'blur')
-            .subscribe((event: FocusEvent) => {
-                if (
-                    !(event.relatedTarget && elementHasParent(new ElementRef(event.relatedTarget), this.service.root))
-                    && !this.service.isHovered
-                ) {
-                    this.service.setFocus(false);
-                }
-            });
-
-        this.subs = Observable.fromEvent(this.element.nativeElement, 'focus')
-            .subscribe((event: FocusEvent) => {
-                this.service.setFocus(true);
-            });
     }
 
     ngOnDestroy() {
