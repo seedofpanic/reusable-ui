@@ -18,8 +18,7 @@ install:
   - npm install
 
 script:
-  - npm run lint
-  - npm test
+  - npm run ci
   - ng build --prod
 
 notifications:
