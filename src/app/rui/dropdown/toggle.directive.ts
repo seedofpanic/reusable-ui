@@ -1,8 +1,7 @@
-import {Directive, ElementRef, Renderer, OnDestroy} from '@angular/core';
+import {Directive, ElementRef, OnDestroy} from '@angular/core';
 import {RuiDropdownService} from './dropdown.service';
 import {Observable} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
-import {elementHasParent} from '../tools/domHelpers';
 
 @Directive({
     selector: '[ruiToggle]'
@@ -16,18 +15,6 @@ export class RuiToggleDirective extends SubscriptionHandler implements OnDestroy
         this.subs = Observable.fromEvent(element.nativeElement, 'click')
             .subscribe(() => {
                 this.service.toggleOpen();
-            });
-
-        this.subs = Observable.fromEvent(this.element.nativeElement, 'blur')
-            .subscribe((event: FocusEvent) => {
-                if (!event.relatedTarget || !elementHasParent(new ElementRef(event.relatedTarget), this.service.root)) {
-                    this.service.setFocus(false);
-                }
-            });
-
-        this.subs = Observable.fromEvent(this.element.nativeElement, 'focus')
-            .subscribe((event: FocusEvent) => {
-                this.service.setFocus(true);
             });
     }
 

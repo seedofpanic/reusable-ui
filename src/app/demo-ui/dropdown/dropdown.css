@@ -5,3 +5,7 @@
 .menu.open {
     display: block;
 }
+
+.selected {
+    background-color: lightblue;
+}

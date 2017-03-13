@@ -35,7 +35,7 @@ export class RuiItemDirective extends SubscriptionHandler implements OnDestroy, 
         this.subs = this.service.selectSubject
             .distinctUntilChanged()
             .subscribe(selected => {
-                this.context.isSelected = this.ruiItem === selected;
+                this.context.isSelected = this.ruiItem === selected.value;
             });
     }
 
@@ -46,7 +46,7 @@ export class RuiItemDirective extends SubscriptionHandler implements OnDestroy, 
                 isSelected: false
             };
 
-            const view: EmbeddedViewRef<any> = this.viewContainerRef
+            const view = this.viewContainerRef
                 .createEmbeddedView(this.service.itemTemplate || this.templateRef, {context: this.context});
 
             if (this.clickSubscription) {

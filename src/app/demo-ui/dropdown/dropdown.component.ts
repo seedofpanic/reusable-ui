@@ -1,4 +1,4 @@
-import {Component, forwardRef, Input, TemplateRef, ContentChild} from '@angular/core';
+import {Component, forwardRef, Input, TemplateRef, ContentChild, Output, EventEmitter} from '@angular/core';
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
@@ -17,6 +17,8 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 export class DropdownComponent implements ControlValueAccessor {
 
     @Input() items: any[];
+    @Input() selected: any;
+    @Output() selectedChange = new EventEmitter<any>();
 
     private _value: string;
     public isOpen: boolean;

@@ -1,4 +1,4 @@
-import {Injectable, TemplateRef, ElementRef, OnDestroy} from '@angular/core';
+import {Injectable, TemplateRef, ElementRef, Renderer, OnDestroy} from '@angular/core';
 import {Subject, Observable} from 'rxjs';
 import {SubscriptionHandler} from '../tools/subscriptionHandler';
 import {StateHistory, IState} from '../tools/stateHistory';
@@ -6,7 +6,7 @@ import {StateHistory, IState} from '../tools/stateHistory';
 interface DropdownEvent<T> {
     silent?: boolean;
     force?: boolean;
-    value: T;
+    value?: T;
 }
 
 @Injectable()
@@ -16,6 +16,7 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
     openSubject = new Subject<any>();
     focusSubject = new Subject<any>();
 
+    lastFocusedRef: ElementRef;
     root: ElementRef;
     itemTemplate: TemplateRef<any>;
 
@@ -25,7 +26,7 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
 
     history: StateHistory;
 
-    constructor() {
+    constructor(private renderer: Renderer) {
         super();
 
         this.history = new StateHistory();
@@ -37,21 +38,28 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
             });
 
         this.subs = this.selectSubject
-            .distinctUntilChanged((a, b) => a.value === b.value)
             .pairwise()
             .subscribe((event) => {
                 if (!event[1].force) {
                     this.history.do('select', event);
                 }
 
-                event[1].value = event[1].value.toString();
-                event[1].silent = true;
-                this.changeSubject.next(event[1]);
                 this.openSubject.next(false);
+
+                if (event[0].value === event[1].value) {
+                    return;
+                }
+
+                this.changeSubject.next({
+                    value: event[1].value ? event[1].value.toString() : '',
+                    silent: true,
+                    force: event[1].force
+                });
             });
 
-        this.selectSubject.next({value: {}});
+        this.selectSubject.next({force: true});
 
+        // TODO: refactor
         this.subs = this.changeSubject
             .distinctUntilChanged((a, b) => a.value === b.value)
             .audit(value => {
@@ -68,6 +76,18 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
                 }
 
                 this.history.do('change', event);
+            });
+
+        this.subs = this.focusSubject
+            .subscribe(event => {
+                if (event) {
+                    if (!this.lastFocusedRef) {
+                        this.focusSubject.next(false);
+                        return;
+                    }
+
+                    this.renderer.invokeElementMethod(this.lastFocusedRef.nativeElement, 'focus');
+                }
             });
     }
 
@@ -98,7 +118,7 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
                 this.changeSubject.next({silent: true, value: state.data[0].value});
                 break;
             case 'select':
-                this.changeSubject.next({silent: true, value: state.data[0].value});
+                this.selectSubject.next({force: true, value: state.data[0].value});
                 break;
         }
     }
@@ -114,7 +134,7 @@ export class RuiDropdownService extends SubscriptionHandler implements OnDestroy
                 this.changeSubject.next({silent: true, value: state.data[1].value});
                 break;
             case 'select':
-                this.changeSubject.next({silent: true, value: state.data[1].value});
+                this.selectSubject.next({force: true, value: state.data[1].value});
                 break;
         }
     }

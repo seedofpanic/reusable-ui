@@ -16,7 +16,6 @@ export class RuiMenuDirective extends SubscriptionHandler implements OnDestroy, 
         super();
 
         this.subs = this.service.openSubject
-            .distinctUntilChanged()
             .subscribe(isOpen => {
                 this.isOpenChange.next(isOpen);
             });

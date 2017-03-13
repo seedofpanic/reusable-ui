@@ -13,7 +13,7 @@
     "e2e": "protractor",
     "ci": "npm-run-all -s lint test -p -r start e2e"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular/common": "^2.3.1",
     "@angular/compiler": "^2.3.1",

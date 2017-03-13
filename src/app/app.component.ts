@@ -30,8 +30,8 @@ export class AppComponent {
         ];
 
         this.form = formBulder.group({
-            ddTest: ['test'],
-            ddTest2: ['test2']
+            ddTest: ['test2'],
+            ddTest2: []
         });
     }
 }
